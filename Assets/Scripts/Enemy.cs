@@ -23,7 +23,6 @@ public class Enemy : MonoBehaviour
     //#1 handle to animator
     private Animator _anim;
 
-    //Audio sorce varibale
     private AudioSource _audioSource;
 
     private float _fireRate = 3.0f;
