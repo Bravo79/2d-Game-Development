@@ -12,6 +12,14 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _speedMultiplier = 2f;
 
+    [Tooltip("Thrusters Increase amount")]
+    [SerializeField]
+    private float _increaseThrusters = 4f;
+
+    [Tooltip("Thruster Game Objects On Player")]
+    [SerializeField]
+    GameObject _boostersOff, _boostersON;
+
     [Tooltip("Laser to fire")]
     [SerializeField]
     GameObject _laserPrefab;
@@ -34,9 +42,7 @@ public class Player : MonoBehaviour
     [Tooltip("Shield Prefab")]
     [SerializeField]
     GameObject _ShieldVisualizerPrefab;
-
-
-    
+        
 
     [Tooltip("Toggle To Activate Triple Shot")]
     [SerializeField]
@@ -74,8 +80,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
-        //take the current position = snap to start postion (0, 0, 0)
+                
         transform.position = new Vector3(0, -4.5f, 0);
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
@@ -108,7 +113,6 @@ public class Player : MonoBehaviour
 
         }
         
-
     }
 
     // Update is called once per frame
@@ -121,7 +125,7 @@ public class Player : MonoBehaviour
         {
             FireLaser();
         }
-        
+                      
     }
      
     private void ShipMovement()
@@ -129,28 +133,26 @@ public class Player : MonoBehaviour
         //variable for movement input
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
-
-        //Example code for movement
-        //transform.Translate(Vector3.right * horizontalInput * _speed * Time.deltaTime);
-        //transform.Translate(Vector3.up * verticalInput * _speed * Time.deltaTime);
-
-        Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
                 
-        transform.Translate(direction * _speed * Time.deltaTime);
-       
-        
+        Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
 
-        //Keep player in bounds on y 
-        //if (transform.position.y >= 0)
-        //{
-        //    transform.position = new Vector3(transform.position.x, 0, 0);
-        //}
-        //else if(transform.position.y <= -5)
-        //{
-        //    transform.position = new Vector3(transform.position.x, -5, 0);
-        //}
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
 
-        //or use mathf.clamp to clamp player between specific numbers/spots on the screen
+            transform.Translate(direction * (_speed * _increaseThrusters) * Time.deltaTime);
+            _boostersOff.SetActive(false);
+            _boostersON.SetActive(true);
+
+        }
+        else
+        {
+
+            transform.Translate(direction * _speed * Time.deltaTime);
+            _boostersOff.SetActive(true);
+            _boostersON.SetActive(false);
+        }
+
+
         transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, -5, 1.5f), 0);
 
 
@@ -199,21 +201,15 @@ public class Player : MonoBehaviour
 
     public void PlayerDamage()
     {
-
-        //if shields is sctive
-        //do nothing
-        //decative shields if hit
+                
         if (_isShieldstActive == true)
         {
             _isShieldstActive = false;
             _ShieldVisualizerPrefab.SetActive(false);
-            return; //return; //Means nothing below this will run in code. 
+            return; 
 
-        }
-                
-        //example of different ways to write this.        
-        //_lives = _lives - 1;
-        //_lives -= 1;
+        }             
+        
         _lives--;
 
         EngineDamage();
@@ -222,36 +218,31 @@ public class Player : MonoBehaviour
 
         if (_lives < 1)
         {
-
-            //Communicate with spawn manager to let them know to stop spawning
+                        
             _spawnManager.OnPlayerDeath();
             
             Destroy(this.gameObject);
-
-            
-
+                      
         }
 
     }
       
     public void TripleShotActive()
     {
-
-        //tripleshotactive becomes true
+                
         _isTripleShotActive = true;
-        //start the power down routine for triple shot
+        
         StartCoroutine(TripleShotPowerDownRoutine());
 
     }
 
-    //Ienumerator TripleShotPowerDownRoutine
+    
     IEnumerator TripleShotPowerDownRoutine()
     {
 
         yield return new WaitForSeconds(5.0f); //Wait for 5 seconds then set to false
         _isTripleShotActive = false;
         
-
     }
 
     public void SpeedBoostActive()
@@ -282,13 +273,10 @@ public class Player : MonoBehaviour
 
     public void AddScore(int points)
     {
-
-        //add 10 to score
+                
         _score += points;
-        //communicate with the UI to add ponits to score
-
+        
         _uiManager.UpdateScore(_score);
-
 
     }
 
@@ -309,5 +297,6 @@ public class Player : MonoBehaviour
         }
 
     }
+      
 
 }
