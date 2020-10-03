@@ -20,7 +20,7 @@ public class Laser : MonoBehaviour
             MoveUp();
 
         }
-        else
+        else 
         {
 
             MoveDown();
@@ -33,7 +33,7 @@ public class Laser : MonoBehaviour
     {
         transform.Translate(Vector3.up * _laserSpeed * Time.deltaTime);
 
-        if (transform.position.y >= 10f)
+        if (transform.position.y > 10f)
         {
 
             //check to see the object has a parent

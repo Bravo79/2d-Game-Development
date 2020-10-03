@@ -9,7 +9,7 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     float _enemySpeed = 4f;
 
-    [Tooltip("Enemy Laser")]
+    [Tooltip("Enemy Laser Prefab")]
     [SerializeField]
     private GameObject _enemyLaserPrefab;
 
@@ -82,6 +82,7 @@ public class Enemy : MonoBehaviour
                 lasers[i].AssignEnemyLaser();
 
             }
+            Debug.Log("Enemy laser fired");
 
         }
 
